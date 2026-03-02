@@ -37,7 +37,7 @@ def fetch_or_load_cache(file_path, fetch_function):
         
     return data
 
-def fetch_live_sportsbook_data():
+def fetch_live_sportsbook_data(source='nba'):
     """Makes the actual HTTP request to The Odds API."""
     params = {
         "apiKey": ODDS_API_KEY,
@@ -45,15 +45,27 @@ def fetch_live_sportsbook_data():
         "markets": "h2h",
         "oddsFormat": "decimal",
     }
-    response = requests.get(ODDS_API_URL, params=params)
+    response = requests.get(ODDS_API_URL[source], params=params)
     response.raise_for_status()
     return response.json()
 
 def main():
     print("Checking sportsbook data status...")
-    # This will now intelligently manage your API quota while ensuring daily freshness
-    raw_sb_data = fetch_or_load_cache(ODDS_CACHE_FILE, fetch_live_sportsbook_data)
-    print(f"Successfully loaded {len(raw_sb_data)} games.")
+    
+    for source in ODDS_CACHE_FILE.keys():
+        print(f"\n--- Processing {source.upper()} ---")
+        
+        # Use a lambda to pass the specific source without executing it immediately
+        fetch_func = lambda s=source: fetch_live_sportsbook_data(s)
+        
+        # Pass the dictionary value for the file, and the lambda for the function
+        raw_sb_data = fetch_or_load_cache(ODDS_CACHE_FILE[source], fetch_func)
+        
+        print(f"Successfully loaded {len(raw_sb_data)} {source.upper()} games.")
+
+if __name__ == "__main__":
+    main()
+
 
 if __name__ == "__main__":
     main()
