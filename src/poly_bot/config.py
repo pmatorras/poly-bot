@@ -1,8 +1,15 @@
 import os
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
+print(PROJECT_ROOT)
+# Define the data directory
+DATA_DIR = PROJECT_ROOT / "data"
+DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 # --- Configuration ---
-ODDS_CACHE_FILE = "nba_odds_cache.json"
-TRADES_FILE = "paper_trades.csv"
+ODDS_CACHE_FILE = DATA_DIR / "nba_odds_cache.json"
+TRADES_FILE = DATA_DIR / "paper_trades.csv"
 MINIMUM_EDGE_THRESHOLD = 1.0  # Only log trades if the edge is > 1.0%
 ODDS_API_KEY = os.getenv('ODDS_API_KEY')
 ODDS_API_URL = "https://api.the-odds-api.com/v4/sports/basketball_nba/odds"

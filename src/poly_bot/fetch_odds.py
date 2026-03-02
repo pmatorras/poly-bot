@@ -2,7 +2,7 @@ import os
 import time
 import json
 import requests
-from config import ODDS_API_KEY, ODDS_API_URL, ODDS_CACHE_FILE
+from src.poly_bot.config import ODDS_API_KEY, ODDS_API_URL, ODDS_CACHE_FILE
 
 # How old the cache can be before we force a new download
 CACHE_STALE_HOURS = 12

@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 from datetime import datetime
 import pytz
-from config import MINIMUM_EDGE_THRESHOLD, TRADES_FILE, ODDS_CACHE_FILE, NBA_ABBR
+from src.poly_bot.config import MINIMUM_EDGE_THRESHOLD, TRADES_FILE, ODDS_CACHE_FILE, NBA_ABBR
 
 
 def save_opportunities_to_csv(results):

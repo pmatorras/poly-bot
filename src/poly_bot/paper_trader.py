@@ -1,19 +1,16 @@
 import pandas as pd
 import requests
 from datetime import datetime
-from config import ODDS_API_KEY, TRADES_FILE
+from src.poly_bot.config import ODDS_API_KEY, TRADES_FILE
 
 STARTING_BANKROLL = 10000.0
-FLAT_BET_SIZE = 100.0
 
 def fetch_yesterdays_winners():
     """Hits the Odds API /scores endpoint to find out who actually won."""
     url = "https://api.the-odds-api.com/v4/sports/basketball_nba/scores"
     params = {"apiKey": ODDS_API_KEY, "daysFrom": 1} # Look back 1 day
     
-    #response = requests.get(url, params=params)
-    response = {}
-    response.status_code = 200
+    response = requests.get(url, params=params)
     if response.status_code != 200:
         print("Failed to fetch scores.")
         return {}
@@ -55,20 +52,12 @@ def calculate_kelly_fraction(true_prob_pct, buy_price_pct, fraction=0.25):
     if kelly_pct <= 0: return 0.0
     return kelly_pct * fraction
 
-import pandas as pd
-import requests
-from datetime import datetime
-from config import ODDS_API_KEY
-
-CSV_FILE = "paper_trades.csv"
-INITIAL_BANKROLL = 10000.0
-
 def get_current_bankroll(df):
     """Calculates your current bankroll by summing all completed PnL."""
     if 'PnL_USD' in df.columns and not df['PnL_USD'].isna().all():
         total_profit = df['PnL_USD'].sum(skipna=True)
-        return INITIAL_BANKROLL + total_profit
-    return INITIAL_BANKROLL
+        return STARTING_BANKROLL + total_profit
+    return STARTING_BANKROLL
 
 
 # --- Core Logic Functions ---
@@ -143,9 +132,9 @@ def place_todays_bets(df):
 # --- Entry Point ---
 def run_simulation():
     try:
-        df = pd.read_csv(CSV_FILE)
+        df = pd.read_csv(TRADES_FILE)
     except FileNotFoundError:
-        print(f"No {CSV_FILE} found. Run calculate_edges.py first.")
+        print(f"No {TRADES_FILE} found. Run calculate_edges.py first.")
         return
 
     # Pass the dataframe through the pipeline
@@ -153,7 +142,7 @@ def run_simulation():
     df = place_todays_bets(df)
     
     # Save once at the very end
-    df.to_csv(CSV_FILE, index=False)
+    df.to_csv(TRADES_FILE, index=False)
     
     print("\n--- Pipeline Complete ---")
     print(f"Current Bankroll: ${get_current_bankroll(df):.2f}")
