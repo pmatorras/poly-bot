@@ -26,7 +26,7 @@ def save_opportunities_to_csv(results):
                 "Avg_Norm_SB_Prob": row["Avg_Norm_SB (%)"],
                 "Poly_Buy_Price_Pct": row["Actionable_Poly_Ask (%)"],
                 "Trading_Edge_Pct": row["Trading_Edge (%)"],
-                "Available_Liquidity_USD": row.get("Available_Liquidity_USD", 0.0),
+                "Available_Liquidity_USD": row.get("Available_Liquidity ($)", 0.0),
                 "Status": "PENDING", # Used by paper_trader.py to know it needs grading
                 "Result": None,      # Will be updated to WON/LOST once the match finishes
                 "Bet_Size_USD": None, # Filled by the paper_trader
@@ -212,7 +212,7 @@ def main():
                     "Avg_Norm_SB (%)": round(avg_norm_sb, 2),
                     "Actionable_Poly_Ask (%)": round(actionable_poly, 2),
                     "Trading_Edge (%)": round(avg_norm_sb - actionable_poly, 2), 
-                    "Available volume ($)" : int(actionable_vol)
+                    "Available_Liquidity ($)" : int(actionable_vol)
                 })
 
 
