@@ -4,30 +4,13 @@ import requests
 import pandas as pd
 from datetime import datetime
 import pytz
+from config import MINIMUM_EDGE_THRESHOLD, TRADES_FILE, ODDS_CACHE_FILE, NBA_ABBR
 
-# --- Configuration ---
-ODDS_CACHE_FILE = "nba_odds_cache.json"
-TRADES_FILE = "paper_trades.csv"
-MINIMUM_EDGE_THRESHOLD = 1.0  # Only log trades if the edge is > 1.0%
-
-# Map to translate Odds API full names into Polymarket's 3-letter abbreviations
-NBA_ABBR = {
-    "Atlanta Hawks": "atl", "Boston Celtics": "bos", "Brooklyn Nets": "bkn",
-    "Charlotte Hornets": "cha", "Chicago Bulls": "chi", "Cleveland Cavaliers": "cle",
-    "Dallas Mavericks": "dal", "Denver Nuggets": "den", "Detroit Pistons": "det",
-    "Golden State Warriors": "gsw", "Houston Rockets": "hou", "Indiana Pacers": "ind",
-    "Los Angeles Clippers": "lac", "Los Angeles Lakers": "lal", "Memphis Grizzlies": "mem",
-    "Miami Heat": "mia", "Milwaukee Bucks": "mil", "Minnesota Timberwolves": "min",
-    "New Orleans Pelicans": "nop", "New York Knicks": "nyk", "Oklahoma City Thunder": "okc",
-    "Orlando Magic": "orl", "Philadelphia 76ers": "phi", "Phoenix Suns": "phx",
-    "Portland Trail Blazers": "por", "Sacramento Kings": "sac", "San Antonio Spurs": "sas",
-    "Toronto Raptors": "tor", "Utah Jazz": "uta", "Washington Wizards": "was"
-}
 
 def save_opportunities_to_csv(results):
     """Filters for positive edges and appends them to the tracking CSV."""
     
-    # 1. Filter for viable trades
+    # Filter for viable trades
     valid_trades = []
     today_str = datetime.now().strftime("%Y-%m-%d")
     
@@ -56,7 +39,7 @@ def save_opportunities_to_csv(results):
         
     df_new = pd.DataFrame(valid_trades)
     
-    # 2. Append to the CSV safely
+    # Append to the CSV safely
     if os.path.exists(TRADES_FILE):
         # Load existing file
         df_existing = pd.read_csv(TRADES_FILE)
