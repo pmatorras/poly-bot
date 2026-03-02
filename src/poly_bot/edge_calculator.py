@@ -4,12 +4,12 @@ import requests
 import pandas as pd
 from datetime import datetime
 import pytz
-from src.poly_bot.config import MINIMUM_EDGE_THRESHOLD, TRADES_FILE, ODDS_CACHE_FILE, NBA_ABBR
+from src.poly_bot.config import MINIMUM_EDGE_THRESHOLD, TRADES_FILE, ODDS_CACHE_FILE, ABBR_MAP
 
+NBA_ABBR = ABBR_MAP['nba']
 
 def save_opportunities_to_csv(results):
     """Filters for positive edges and appends them to the tracking CSV."""
-    
     # Filter for viable trades
     valid_trades = []
     today_str = datetime.now().strftime("%Y-%m-%d")
@@ -21,6 +21,7 @@ def save_opportunities_to_csv(results):
             # Format the dictionary for our CSV schema
             valid_trades.append({
                 "Date": today_str,
+                "Sport" : row["Sport"],
                 "Game": row["Game"],
                 "Team_Bet_On": row["Team"],
                 "Avg_Norm_SB_Prob": row["Avg_Norm_SB (%)"],
@@ -77,22 +78,25 @@ def fetch_polymarket_by_slug(slug):
             return data[0] # Return the specific event
     return None
 
-def main():
-    # 1. Load your existing Odds API cache
+def calculate_sport(sport, cache_file):
+    """Processes edges for a single sport."""
+    print(f"\n--- Analyzing {sport.upper()} Edges ---")
+    
     try:
-        with open(ODDS_CACHE_FILE, "r", encoding="utf-8") as f:
+        with open(cache_file, "r", encoding="utf-8") as f:
             odds_games = json.load(f)
     except FileNotFoundError:
-        print("Odds cache not found. Run the previous script to download it once.")
-        return
+        print(f"Odds cache not found for {sport}. Run fetch_odds.py first.")
+        return [] # Return empty list so we don't break the main loop
 
     results = []
+    sport_abbr = ABBR_MAP.get(sport, {})
     
     for game in odds_games:
         home_team = game.get("home_team")
         away_team = game.get("away_team")
         
-        if home_team not in NBA_ABBR or away_team not in NBA_ABBR:
+        if home_team not in sport_abbr or away_team not in sport_abbr:
             continue
             
         # 2. Extract and Average Sportsbook Odds
@@ -101,7 +105,6 @@ def main():
             
         team_normalized_probs = {}
         
-        # Loop through ALL bookmakers for this game
         for bm in game["bookmakers"]:
             if not bm.get("markets") or not bm["markets"][0].get("outcomes"):
                 continue
@@ -110,28 +113,23 @@ def main():
             if len(outcomes) != 2:
                 continue
                 
-            # Get raw implied probabilities for this specific bookie
             prob_a = (1 / outcomes[0]["price"]) * 100
             prob_b = (1 / outcomes[1]["price"]) * 100
             
-            # Calculate this specific bookie's vig/overround
             vig_sum = prob_a + prob_b
             
-            # Normalize this bookie's odds to 100%
             norm_a = (prob_a / vig_sum) * 100
             norm_b = (prob_b / vig_sum) * 100
             
             team_a = outcomes[0]["name"]
             team_b = outcomes[1]["name"]
             
-            # Append to our list
             if team_a not in team_normalized_probs: team_normalized_probs[team_a] = []
             if team_b not in team_normalized_probs: team_normalized_probs[team_b] = []
                 
             team_normalized_probs[team_a].append(norm_a)
             team_normalized_probs[team_b].append(norm_b)
             
-        # Calculate the final average normalized probability across all bookies
         sb_odds = {}
         for t, probs in team_normalized_probs.items():
             if probs:
@@ -139,9 +137,11 @@ def main():
             
         # 3. Dynamically Generate Polymarket Slug!
         date_str = get_us_date(game["commence_time"])
-        away_abbr = NBA_ABBR[away_team]
-        home_abbr = NBA_ABBR[home_team]
-        slug = f"nba-{away_abbr}-{home_abbr}-{date_str}"
+        away_abbr = sport_abbr[away_team]
+        home_abbr = sport_abbr[home_team]
+        
+        # DYNAMIC SLUG GENERATION
+        slug = f"{sport}-{away_abbr}-{home_abbr}-{date_str}"
         
         print(f"Checking {slug}...")
         poly_event = fetch_polymarket_by_slug(slug)
@@ -150,7 +150,7 @@ def main():
             print(" -> Not found on Polymarket, skipping.")
             continue
             
-                # 4. Extract Polymarket CLOB (Order Book) Prices
+        # 4. Extract Polymarket CLOB (Order Book) Prices
         poly_odds = {}
         for market in poly_event.get("markets", []):
             desc = market.get("description", "").lower()
@@ -158,7 +158,6 @@ def main():
                 continue
                 
             outcomes = json.loads(market.get("outcomes", "[]"))
-            # We now grab the token IDs instead of the outcomePrices
             clob_tokens = json.loads(market.get("clobTokenIds", "[]")) 
             
             is_moneyline = False
@@ -167,7 +166,6 @@ def main():
                     if outcome_str in full_team_name or full_team_name in outcome_str:
                         token_id = clob_tokens[i]
                         
-                        # Hit the CLOB API for this specific team's token
                         clob_url = "https://clob.polymarket.com/book"
                         clob_resp = requests.get(clob_url, params={"token_id": token_id})
                         
@@ -176,18 +174,14 @@ def main():
                             asks = book.get('asks', [])
                             
                             if asks:
-                                # Sort asks ascending (lowest price first)
                                 sorted_asks = sorted(asks, key=lambda x: float(x['price']))
                                 best_ask_price = float(sorted_asks[0]['price'])
                                 
-                                # Sum up all the shares available at this exact best price
-                                # (Sometimes multiple users place orders at the same price)
                                 available_shares = sum([
                                     float(ask['size']) for ask in sorted_asks 
                                     if float(ask['price']) == best_ask_price
                                 ])
                                 
-                                # Calculate max dollar investment possible at this price
                                 max_dollars = available_shares * best_ask_price
                                 
                                 poly_odds[full_team_name] = {
@@ -203,10 +197,10 @@ def main():
         if len(sb_odds) == 2 and len(poly_odds) == 2:
             for team in sb_odds.keys():
                 avg_norm_sb = sb_odds[team]
-                # Use the exact actionable resting limit order from the book
                 actionable_poly = poly_odds[team]['price_pct']
                 actionable_vol = poly_odds[team]['max_dollars']
                 results.append({
+                    "Sport": sport.upper(), 
                     "Game": f"{away_abbr.upper()} @ {home_abbr.upper()}",
                     "Team": team,
                     "Avg_Norm_SB (%)": round(avg_norm_sb, 2),
@@ -214,15 +208,29 @@ def main():
                     "Trading_Edge (%)": round(avg_norm_sb - actionable_poly, 2), 
                     "Available_Liquidity ($)" : int(actionable_vol)
                 })
+                
+    return results
 
-
-    if results:
-        df = pd.DataFrame(results).sort_values(by="Trading_Edge (%)", key=abs, ascending=False)
+def main():
+    all_results = []
+    
+    # Iterate through the config dictionary
+    for sport, cache_file in ODDS_CACHE_FILE.items():
+        sport_results = calculate_sport(sport, cache_file)
+        all_results.extend(sport_results)
+        
+    # Process and save everything together at the end
+    if all_results:
+        df = pd.DataFrame(all_results).sort_values(by="Trading_Edge (%)", key=abs, ascending=False)
         print("\n--- TODAY'S MATCHES: POLYMARKET VS SPORTSBOOKS ---")
         print(df.to_string(index=False))
-        save_opportunities_to_csv(results)
+        save_opportunities_to_csv(all_results)
     else:
-        print("No intersecting data found.")
+        print("\nNo intersecting data found across any sports.")
+
+if __name__ == "__main__":
+    main()
+
     
 if __name__ == "__main__":
     main()

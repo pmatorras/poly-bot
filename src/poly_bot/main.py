@@ -31,9 +31,7 @@ def main():
     if args.run in ['analyze', 'morning_routine']:
         log_step("edge_calculator.py")
         edge_calculator_main()
-        
-        # We call paper trader AGAIN here, but because we already graded, 
-        # it will skip Phase 1 and immediately jump to Phase 2 (Sizing today's new bets)
+        # Call paper trader AGAIN here, but because we already graded, it will skip Phase 1 and immediately jump to Phase 2 (Sizing today's new bets)
         log_step("paper_trader.py (Sizing phase)")
         paper_trader_main()
 
