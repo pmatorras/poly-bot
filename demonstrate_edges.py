@@ -1,3 +1,4 @@
+import os
 import json
 import requests
 import pandas as pd
@@ -6,6 +7,8 @@ import pytz
 
 # --- Configuration ---
 ODDS_CACHE_FILE = "nba_odds_cache.json"
+TRADES_FILE = "paper_trades.csv"
+MINIMUM_EDGE_THRESHOLD = 1.0  # Only log trades if the edge is > 1.0%
 
 # Map to translate Odds API full names into Polymarket's 3-letter abbreviations
 NBA_ABBR = {
@@ -20,6 +23,60 @@ NBA_ABBR = {
     "Portland Trail Blazers": "por", "Sacramento Kings": "sac", "San Antonio Spurs": "sas",
     "Toronto Raptors": "tor", "Utah Jazz": "uta", "Washington Wizards": "was"
 }
+
+def save_opportunities_to_csv(results):
+    """Filters for positive edges and appends them to the tracking CSV."""
+    
+    # 1. Filter for viable trades
+    valid_trades = []
+    today_str = datetime.now().strftime("%Y-%m-%d")
+    
+    for row in results:
+        # Check if we have a positive edge greater than our threshold
+        if row["Trading_Edge (%)"] >= MINIMUM_EDGE_THRESHOLD:
+            
+            # Format the dictionary for our CSV schema
+            valid_trades.append({
+                "Date": today_str,
+                "Game": row["Game"],
+                "Team_Bet_On": row["Team"],
+                "Avg_Norm_SB_Prob": row["Avg_Norm_SB (%)"],
+                "Poly_Buy_Price_Pct": row["Actionable_Poly_Ask (%)"],
+                "Trading_Edge_Pct": row["Trading_Edge (%)"],
+                "Available_Liquidity_USD": row.get("Available_Liquidity_USD", 0.0),
+                "Status": "PENDING", # Used by paper_trader.py to know it needs grading
+                "Result": None,      # Will be updated to WON/LOST once the match finishes
+                "Bet_Size_USD": None, # Filled by the paper_trader
+                "PnL_USD": None       # Filled by the paper_trader
+            })
+            
+    if not valid_trades:
+        print("No actionable edges found today.")
+        return
+        
+    df_new = pd.DataFrame(valid_trades)
+    
+    # 2. Append to the CSV safely
+    if os.path.exists(TRADES_FILE):
+        # Load existing file
+        df_existing = pd.read_csv(TRADES_FILE)
+        
+        # Prevent duplicate logging if you run the script twice in one day
+        # We drop existing PENDING trades for today's games to overwrite them with fresher data
+        mask = (df_existing["Date"] == today_str) & (df_existing["Status"] == "PENDING")
+        df_existing = df_existing[~mask]
+        
+        # Combine and save
+        df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+        df_combined.to_csv(TRADES_FILE, index=False)
+        print(f"Appended {len(df_new)} new opportunities to {TRADES_FILE}.")
+    else:
+        # Create the file for the first time
+        df_new.to_csv(TRADES_FILE, index=False)
+        print(f"Created {TRADES_FILE} with {len(df_new)} initial opportunities.")
+        
+    print("\n--- NEW TRADES ADDED ---")
+    print(df_new.to_string(index=False))
 
 def get_us_date(utc_time_str):
     """Converts Odds API UTC time to US Eastern date (used in Polymarket slugs)."""
@@ -180,8 +237,9 @@ def main():
         df = pd.DataFrame(results).sort_values(by="Trading_Edge (%)", key=abs, ascending=False)
         print("\n--- TODAY'S MATCHES: POLYMARKET VS SPORTSBOOKS ---")
         print(df.to_string(index=False))
+        save_opportunities_to_csv(results)
     else:
         print("No intersecting data found.")
-
+    
 if __name__ == "__main__":
     main()
