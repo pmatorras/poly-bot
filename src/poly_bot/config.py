@@ -11,6 +11,7 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 ODDS_CACHE_FILE = {
     "nba" : DATA_DIR / "nba_odds_cache.json",
     "nhl" : DATA_DIR / "nhl_odds_cache.json",
+    "ncaab" : DATA_DIR / "ncaab_odds_cache.json",
 }
 TRADES_FILE = DATA_DIR / "paper_trades.csv"
 MINIMUM_EDGE_THRESHOLD = 1.0  # Only log trades if the edge is > 1.0%
@@ -18,7 +19,15 @@ ODDS_API_KEY = os.getenv('ODDS_API_KEY')
 ODDS_API_URL = {
     "nba" : "https://api.the-odds-api.com/v4/sports/basketball_nba/odds",
     "nhl": "https://api.the-odds-api.com/v4/sports/icehockey_nhl/odds",
+    "ncaab": "https://api.the-odds-api.com/v4/sports/basketball_ncaab/odds",
 }
+
+POLYMARKET_TAGS = {
+    "nba": "nba",
+    "nhl": "nhl",
+    "ncaab": "cbb"
+}
+
 # Map to translate Odds API full names into Polymarket's 3-letter abbreviations
 ABBR_MAP = {
     'nba' : {
@@ -45,5 +54,43 @@ ABBR_MAP = {
         "St Louis Blues": "stl", "Tampa Bay Lightning": "tb", "Toronto Maple Leafs": "tor",
         "Utah Hockey Club": "uta", "Vancouver Canucks": "van", "Vegas Golden Knights": "vgk",
         "Washington Capitals": "wsh", "Winnipeg Jets": "wpg"
-    }
+    },
+    'ncaab': {
+            # NOT FOUND ON POLYMARKET: "Arizona Wildcats"
+            # NOT FOUND ON POLYMARKET: "Cleveland St Vikings"
+            "Coppin St Eagles": "coppst",
+            # NOT FOUND ON POLYMARKET: "Delaware St Hornets"
+            "Duke Blue Devils": "duke",  # guessed, verify manually
+            "East Texas A&M Lions": "tamu",
+            # NOT FOUND ON POLYMARKET: "Eastern Washington Eagles"
+            "Houston Christian Huskies": "houbap",
+            "Howard Bison": "howrd",  # guessed, verify manually
+            "IUPUI Jaguars": "iupui",
+            # NOT FOUND ON POLYMARKET: "Idaho State Bengals"
+            "Idaho Vandals": "idaho",
+            # NOT FOUND ON POLYMARKET: "Incarnate Word Cardinals"
+            "Iowa State Cyclones": "iowast",
+            "Lamar Cardinals": "lamar",
+            "Maryland-Eastern Shore Hawks": "mdes",
+            "McNeese Cowboys": "mcnst",  # guessed, verify manually
+            "Montana Grizzlies": "monst",  # guessed, verify manually
+            "Montana St Bobcats": "mont",  # guessed, verify manually
+            "Morgan St Bears": "morgst",
+            "N Colorado Bears": "ncol",
+            "NC State Wolfpack": "ncst",
+            "New Orleans Privateers": "no",
+            # NOT FOUND ON POLYMARKET: "Nicholls St Colonels"
+            "Norfolk St Spartans": "norfst",
+            "North Carolina Central Eagles": "ncc",
+            "Northern Arizona Lumberjacks": "no",  # guessed, verify manually
+            "Northwestern St Demons": "no",  # guessed, verify manually
+            "Portland St Vikings": "portst",
+            "SE Louisiana Lions": "selou",
+            # NOT FOUND ON POLYMARKET: "Sacramento St Hornets"
+            # NOT FOUND ON POLYMARKET: "South Carolina St Bulldogs"
+            "Stephen F. Austin Lumberjacks": "sfaus",
+            # NOT FOUND ON POLYMARKET: "Texas A&M-CC Islanders"
+            "UT Rio Grande Valley Vaqueros": "utrgv",
+            # NOT FOUND ON POLYMARKET: "Weber State Wildcats"
+        }
 }
