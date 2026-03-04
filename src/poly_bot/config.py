@@ -174,5 +174,9 @@ ABBR_MAP = {
         # NOT FOUND ON POLYMARKET: "Wright St Raiders"
         # NOT FOUND ON POLYMARKET: "Youngstown St Penguins"
         "UAB Blazers": "uab",
+        # NOT FOUND ON POLYMARKET: "Iowa Hawkeyes"
+        # NOT FOUND ON POLYMARKET: "Michigan St Spartans"
+        # NOT FOUND ON POLYMARKET: "Michigan Wolverines"
+        # NOT FOUND ON POLYMARKET: "Rutgers Scarlet Knights"
     }
 }
