@@ -164,7 +164,6 @@ ABBR_MAP = {
         "Stetson Hatters": "stetsn",  # guessed, verify manually
         # NOT FOUND ON POLYMARKET: "Stonehill Skyhawks"
         # NOT FOUND ON POLYMARKET: "Texas Longhorns"
-        "UAB Blazers": "uab",
         # NOT FOUND ON POLYMARKET: "UMKC Kangaroos"
         # NOT FOUND ON POLYMARKET: "USC Trojans"
         # NOT FOUND ON POLYMARKET: "Villanova Wildcats"
@@ -174,5 +173,6 @@ ABBR_MAP = {
         # NOT FOUND ON POLYMARKET: "Wisconsin Badgers"
         # NOT FOUND ON POLYMARKET: "Wright St Raiders"
         # NOT FOUND ON POLYMARKET: "Youngstown St Penguins"
+        "UAB Blazers": "uab",
     }
 }
