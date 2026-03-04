@@ -1,22 +1,36 @@
 import pandas as pd
 import requests
 from datetime import datetime
-from src.poly_bot.config import ODDS_API_KEY, TRADES_FILE
+from src.poly_bot.config import ODDS_API_KEY, TRADES_FILE, ABBR_MAP, ODDS_API_URL
 
 STARTING_BANKROLL = 10000.0
 
-def fetch_yesterdays_winners():
-    """Hits the Odds API /scores endpoint to find out who actually won."""
-    url = "https://api.the-odds-api.com/v4/sports/basketball_nba/scores"
+def fetch_yesterdays_winners(sport):
+    """Hits the Odds API /scores endpoint for a specific sport to find out who actually won."""
+    
+    # Extract the base sport string from the ODDS_API_URL in config
+    # Example: "https://.../sports/basketball_nba/odds" -> "basketball_nba"
+    odds_url = ODDS_API_URL.get(sport.lower())
+    if not odds_url:
+        print(f"No API URL configured for sport: {sport}")
+        return {}
+        
+    api_sport_key = odds_url.split('/sports/')[1].replace('/odds', '')
+    
+    # Construct the correct /scores URL
+    url = f"https://api.the-odds-api.com/v4/sports/{api_sport_key}/scores"
     params = {"apiKey": ODDS_API_KEY, "daysFrom": 1} # Look back 1 day
     
     response = requests.get(url, params=params)
     if response.status_code != 200:
-        print("Failed to fetch scores.")
+        print(f"Failed to fetch scores for {sport}.")
         return {}
         
     games = response.json()
     winners_map = {}
+    
+    # Get the abbreviation mapping for this specific sport
+    sport_abbr_map = ABBR_MAP.get(sport.lower(), {})
     
     for game in games:
         if not game.get("completed"):
@@ -24,7 +38,12 @@ def fetch_yesterdays_winners():
             
         home = game["home_team"]
         away = game["away_team"]
-        game_key = f"{away} @ {home}" # Has to match your Game string format
+        
+        # Apply the abbreviations to match the CSV format exactly
+        home_abbr = sport_abbr_map.get(home, home).upper()
+        away_abbr = sport_abbr_map.get(away, away).upper()
+        
+        game_key = f"{away_abbr} @ {home_abbr}"
         
         # Determine winner by looking at the scores array
         scores = game.get("scores", [])
@@ -38,7 +57,6 @@ def fetch_yesterdays_winners():
                 winners_map[game_key] = scores[1]["name"]
                 
     return winners_map
-
 def calculate_kelly_fraction(true_prob_pct, buy_price_pct, fraction=0.25):
     """Calculates the Quarter-Kelly recommended bet size."""
     p = true_prob_pct / 100.0
@@ -73,20 +91,24 @@ def grade_yesterdays_bets(df):
         return df
         
     print(f"Found {len(pending_df)} pending trades to grade. Fetching results...")
-    
+    # Find all unique sports that have pending trades
+    sports_to_grade = pending_df['Sport'].str.lower().unique()
+
     # In a real run, this calls the fetch_yesterdays_winners() logic we wrote earlier
-    actual_winners = fetch_yesterdays_winners() 
-    
-    if not actual_winners:
+    all_actual_winners = {}
+    for sport in sports_to_grade:
+        winners = fetch_yesterdays_winners(sport)
+        all_actual_winners.update(winners)    
+    if not all_actual_winners:
         print("No completed games found in the API yet.")
         return df
 
     for index, row in pending_df.iterrows():
         game = row['Game']
-        if game not in actual_winners:
+        if game not in all_actual_winners:
             continue 
             
-        is_win = (actual_winners[game] == row['Team_Bet_On'])
+        is_win = (all_actual_winners[game] == row['Team_Bet_On'])
         bet_size = float(row['Bet_Size_USD'])
         buy_price_pct = float(row['Poly_Buy_Price_Pct'])
         
@@ -132,10 +154,12 @@ def place_todays_bets(df):
 # --- Entry Point ---
 def run_simulation():
     try:
-        df = pd.read_csv(TRADES_FILE)
+        # Add dtype parameter here to force 'Result' to be string
+        df = pd.read_csv(TRADES_FILE, dtype={'Result': 'object', 'Status': 'object'})
     except FileNotFoundError:
         print(f"No {TRADES_FILE} found. Run calculate_edges.py first.")
         return
+
 
     # Pass the dataframe through the pipeline
     df = grade_yesterdays_bets(df)

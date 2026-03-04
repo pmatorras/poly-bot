@@ -63,9 +63,6 @@ def main():
         
         print(f"Successfully loaded {len(raw_sb_data)} {source.upper()} games.")
 
-if __name__ == "__main__":
-    main()
-
 
 if __name__ == "__main__":
     main()

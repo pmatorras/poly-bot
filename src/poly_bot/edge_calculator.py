@@ -4,9 +4,8 @@ import requests
 import pandas as pd
 from datetime import datetime
 import pytz
-from src.poly_bot.config import MINIMUM_EDGE_THRESHOLD, TRADES_FILE, ODDS_CACHE_FILE, ABBR_MAP
+from src.poly_bot.config import MINIMUM_EDGE_THRESHOLD, TRADES_FILE, ODDS_CACHE_FILE, ABBR_MAP, POLYMARKET_TAGS
 
-NBA_ABBR = ABBR_MAP['nba']
 
 def save_opportunities_to_csv(results):
     """Filters for positive edges and appends them to the tracking CSV."""
@@ -80,6 +79,8 @@ def fetch_polymarket_by_slug(slug):
 
 def calculate_sport(sport, cache_file):
     """Processes edges for a single sport."""
+    #if "ncaa" not in sport: return []
+
     print(f"\n--- Analyzing {sport.upper()} Edges ---")
     
     try:
@@ -93,6 +94,7 @@ def calculate_sport(sport, cache_file):
     sport_abbr = ABBR_MAP.get(sport, {})
     
     for game in odds_games:
+        #print("game", game)
         home_team = game.get("home_team")
         away_team = game.get("away_team")
         
@@ -141,7 +143,8 @@ def calculate_sport(sport, cache_file):
         home_abbr = sport_abbr[home_team]
         
         # DYNAMIC SLUG GENERATION
-        slug = f"{sport}-{away_abbr}-{home_abbr}-{date_str}"
+        poly_tag = POLYMARKET_TAGS.get(sport, sport)
+        slug = f"{poly_tag}-{away_abbr}-{home_abbr}-{date_str}"
         
         print(f"Checking {slug}...")
         poly_event = fetch_polymarket_by_slug(slug)
@@ -161,9 +164,19 @@ def calculate_sport(sport, cache_file):
             clob_tokens = json.loads(market.get("clobTokenIds", "[]")) 
             
             is_moneyline = False
+            def normalize_name(name):
+                return name.replace(" St ", " State ").replace("SE Louisiana", "Southeastern Louisiana")
+
             for full_team_name in sb_odds.keys():
+                normalized_sb = normalize_name(full_team_name)
                 for i, outcome_str in enumerate(outcomes):
-                    if outcome_str in full_team_name or full_team_name in outcome_str:
+                    normalized_poly = normalize_name(outcome_str)
+                    if normalized_poly in normalized_sb or normalized_sb in normalized_poly:
+
+                        #print(f"   SB teams: {list(sb_odds.keys())}")
+                        #print(f"   Poly outcomes from API: {outcomes}")
+                        print(f"   Poly odds matched: {poly_odds}")
+
                         token_id = clob_tokens[i]
                         
                         clob_url = "https://clob.polymarket.com/book"
