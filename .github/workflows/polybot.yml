@@ -43,7 +43,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           
           # Add all modified tracked files and any new data files
-          git add data/*.csv data/*.json src/poly_bot/config.py
+          git add data/*.csv src/poly_bot/config.py
           
           # Only commit if there are actual changes to prevent workflow errors
           if git diff --staged --quiet; then
