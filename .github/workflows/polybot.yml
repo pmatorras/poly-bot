@@ -1,0 +1,54 @@
+name: PolyBot Daily Pipeline
+
+on:
+  schedule:
+    # Runs at 14:00, 19:00, and 23:00 UTC (10am, 3pm, 7pm US Eastern)
+    - cron: '0 14,19,23 * * *'
+  workflow_dispatch: # Allows you to trigger it manually from the GitHub UI
+
+permissions:
+  contents: write # Crucial: Allows the bot to push commits back to the repo
+
+jobs:
+  run-pipeline:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12' 
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run PolyBot Pipeline
+        env:
+          ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
+        # Assuming your main.py is executable from the root like this
+        # Make sure PYTHONPATH includes the root so absolute imports work
+        run: |
+          PYTHONPATH=. python src/poly_bot/main.py --run pipeline
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Add all modified tracked files and any new data files
+          git add data/*.csv data/*.json src/poly_bot/config.py
+          
+          # Only commit if there are actual changes to prevent workflow errors
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "🤖 Auto-update trades, odds cache, and mappings"
+            git push
+          fi
