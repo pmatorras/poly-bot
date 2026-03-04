@@ -14,7 +14,7 @@ def log_step(step_name):
 
 def main():
     parser = argparse.ArgumentParser(description="Polymarket NBA Arbitrage Bot")
-    parser.add_argument('--run', choices=['fetch', 'analyze', 'resolve', 'pipeline'], default='pipeline', help="Which pipeline step to run")
+    parser.add_argument('--run', choices=['fetch', 'analyze', 'resolve', 'pipeline', 'trade', 'check_poly'], default='pipeline', help="Which pipeline step to run")
     args = parser.parse_args()
 
     # Resolve yesterday's pending bets
