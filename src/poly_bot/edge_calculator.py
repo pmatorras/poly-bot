@@ -44,11 +44,21 @@ def save_opportunities_to_csv(results):
         # Load existing file
         df_existing = pd.read_csv(TRADES_FILE)
         
-        # Prevent duplicate logging if you run the script twice in one day
-        # We drop existing PENDING trades for today's games to overwrite them with fresher data
-        mask = (df_existing["Date"] == today_str) & (df_existing["Status"] == "PENDING")
-        df_existing = df_existing[~mask]
-        
+        # Build a set of already-logged keys — don't touch what exists
+        existing_keys = set(
+            zip(df_existing["Date"], df_existing["Game"], df_existing["Team_Bet_On"])
+        )
+
+        # Only keep truly new bets
+        df_new = df_new[
+            ~df_new.apply(
+                lambda r: (r["Date"], r["Game"], r["Team_Bet_On"]) in existing_keys,
+                axis=1
+            )
+        ]
+        if df_new.empty:
+            print("All opportunities already logged today, nothing to add.")
+            return        
         # Combine and save
         df_combined = pd.concat([df_existing, df_new], ignore_index=True)
         df_combined.to_csv(TRADES_FILE, index=False)
