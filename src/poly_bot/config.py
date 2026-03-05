@@ -228,5 +228,30 @@ ABBR_MAP = {
         # NOT FOUND ON POLYMARKET: "Utah Valley Wolverines"
         # NOT FOUND ON POLYMARKET: "Valparaiso Beacons"
         # NOT FOUND ON POLYMARKET: "Western Kentucky Hilltoppers"
+        # NOT FOUND ON POLYMARKET: "Alabama A&M Bulldogs"
+        # NOT FOUND ON POLYMARKET: "Alabama St Hornets"
+        # NOT FOUND ON POLYMARKET: "Alcorn St Braves"
+        "American Eagles": "amercn", # guessed, verify manually
+        # NOT FOUND ON POLYMARKET: "Arkansas St Red Wolves"
+        # NOT FOUND ON POLYMARKET: "Arkansas-Pine Bluff Golden Lions"
+        # NOT FOUND ON POLYMARKET: "Bethune-Cookman Wildcats"
+        "Boston Univ. Terriers": "bostu", # guessed, verify manually
+        "Bucknell Bison": "buck", # guessed, verify manually
+        "Colgate Raiders": "colg", # guessed, verify manually
+        # NOT FOUND ON POLYMARKET: "Florida A&M Rattlers"
+        "Grambling St Tigers": "mst", # guessed, verify manually
+        "Holy Cross Crusaders": "holy", # guessed, verify manually
+        "Jackson St Tigers": "jackst",
+        "Lehigh Mountain Hawks": "lehi", # guessed, verify manually
+        # NOT FOUND ON POLYMARKET: "Loyola (MD) Greyhounds"
+        # NOT FOUND ON POLYMARKET: "Miss Valley St Delta Devils"
+        "Navy Midshipmen": "navy",
+        # NOT FOUND ON POLYMARKET: "North Dakota St Bison"
+        # NOT FOUND ON POLYMARKET: "Prairie View Panthers"
+        # NOT FOUND ON POLYMARKET: "SE Missouri St Redhawks"
+        # NOT FOUND ON POLYMARKET: "Southern Jaguars"
+        # NOT FOUND ON POLYMARKET: "Southern Miss Golden Eagles"
+        # NOT FOUND ON POLYMARKET: "Tenn-Martin Skyhawks"
+        # NOT FOUND ON POLYMARKET: "Texas Southern Tigers"
     }
 }
