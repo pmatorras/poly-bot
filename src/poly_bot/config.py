@@ -253,5 +253,6 @@ ABBR_MAP = {
         # NOT FOUND ON POLYMARKET: "Southern Miss Golden Eagles"
         # NOT FOUND ON POLYMARKET: "Tenn-Martin Skyhawks"
         # NOT FOUND ON POLYMARKET: "Texas Southern Tigers"
+        # NOT FOUND ON POLYMARKET: "Missouri Tigers"
     }
 }
