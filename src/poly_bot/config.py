@@ -299,5 +299,16 @@ ABBR_MAP = {
         # NOT FOUND ON POLYMARKET: "West Virginia Mountaineers"
         # NOT FOUND ON POLYMARKET: "Western Michigan Broncos"
         # NOT FOUND ON POLYMARKET: "Winthrop Eagles"
+        "Belmont Bruins": "bella", # guessed, verify manually
+        # NOT FOUND ON POLYMARKET: "Bradley Braves"
+        # NOT FOUND ON POLYMARKET: "Illinois St Redbirds"
+        # NOT FOUND ON POLYMARKET: "Merrimack Warriors"
+        # NOT FOUND ON POLYMARKET: "Morehead St Eagles"
+        # NOT FOUND ON POLYMARKET: "Saint Peter's Peacocks"
+        # NOT FOUND ON POLYMARKET: "Seattle Redhawks"
+        # NOT FOUND ON POLYMARKET: "South Alabama Jaguars"
+        # NOT FOUND ON POLYMARKET: "Tennessee St Tigers"
+        # NOT FOUND ON POLYMARKET: "Texas State Bobcats"
+        # NOT FOUND ON POLYMARKET: "Washington St Cougars"
     }
 }
