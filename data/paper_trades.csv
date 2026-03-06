@@ -35,3 +35,6 @@ Date,Game,Team_Bet_On,Avg_Norm_SB_Prob,Poly_Buy_Price_Pct,Trading_Edge_Pct,Avail
 2026-03-06,MIA @ CHA,Miami Heat,28.52,27.0,1.52,1639.0,PENDING,,59.49,,NBA
 2026-03-06,POR @ HOU,Portland Trail Blazers,33.05,32.0,1.05,1314.0,PENDING,,44.12,,NBA
 2026-03-06,LAC @ SAS,Los Angeles Clippers,28.74,27.0,1.74,4541.0,PENDING,,68.1,,NBA
+2026-03-06,DAL @ BOS,Dallas Mavericks,12.62,11.0,1.62,80372.0,PENDING,,52.0,,NBA
+2026-03-06,PHI @ ATL,Atlanta Hawks,64.11,63.0,1.11,779.0,PENDING,,85.71,,NBA
+2026-03-06,TB @ TOR,Toronto Maple Leafs,40.07,39.0,1.07,4802.0,PENDING,,50.12,,NHL
