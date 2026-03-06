@@ -38,3 +38,6 @@ Date,Game,Team_Bet_On,Avg_Norm_SB_Prob,Poly_Buy_Price_Pct,Trading_Edge_Pct,Avail
 2026-03-06,DAL @ BOS,Dallas Mavericks,12.62,11.0,1.62,80372.0,PENDING,,52.0,,NBA
 2026-03-06,PHI @ ATL,Atlanta Hawks,64.11,63.0,1.11,779.0,PENDING,,85.71,,NBA
 2026-03-06,TB @ TOR,Toronto Maple Leafs,40.07,39.0,1.07,4802.0,PENDING,,50.12,,NHL
+2026-03-06,IND @ LAL,Indiana Pacers,22.87,21.0,1.87,492.0,PENDING,,67.63,,NBA
+2026-03-06,BKN @ DET,Brooklyn Nets,14.96,13.0,1.96,498.0,PENDING,,64.37,,NBA
+2026-03-06,GSW @ OKC,Oklahoma City Thunder,84.58,54.0,30.58,14.0,PENDING,,14.0,,NBA
