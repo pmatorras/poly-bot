@@ -386,5 +386,12 @@ ABBR_MAP = {
         # NOT FOUND ON POLYMARKET: "William & Mary Tribe"
         # NOT FOUND ON POLYMARKET: "Wyoming Cowboys"
         # NOT FOUND ON POLYMARKET: "Yale Bulldogs"
+        # NOT FOUND ON POLYMARKET: "Appalachian St Mountaineers"
+        "Coastal Carolina Chanticleers": "sc", # guessed, verify manually
+        # NOT FOUND ON POLYMARKET: "Drexel Dragons"
+        # NOT FOUND ON POLYMARKET: "East Tennessee St Buccaneers"
+        # NOT FOUND ON POLYMARKET: "Pacific Tigers"
+        # NOT FOUND ON POLYMARKET: "San Francisco Dons"
+        # NOT FOUND ON POLYMARKET: "Wofford Terriers"
     }
 }
