@@ -394,5 +394,10 @@ ABBR_MAP = {
         # NOT FOUND ON POLYMARKET: "San Francisco Dons"
         # NOT FOUND ON POLYMARKET: "Wofford Terriers"
         # NOT FOUND ON POLYMARKET: "Nebraska Cornhuskers"
+        # NOT FOUND ON POLYMARKET: "Green Bay Phoenix"
+        # NOT FOUND ON POLYMARKET: "Illinois Fighting Illini"
+        # NOT FOUND ON POLYMARKET: "Monmouth Hawks"
+        # NOT FOUND ON POLYMARKET: "UNC Wilmington Seahawks"
+        # NOT FOUND ON POLYMARKET: "UTSA Roadrunners"
     }
 }

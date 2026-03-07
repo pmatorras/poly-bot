@@ -55,3 +55,6 @@ Date,Game,Team_Bet_On,Avg_Norm_SB_Prob,Poly_Buy_Price_Pct,Trading_Edge_Pct,Avail
 2026-03-07,TB @ BUF,Buffalo Sabres,49.3,48.0,1.3,234.0,PENDING,,70.01,,NHL
 2026-03-07,DET @ NJ,New Jersey Devils,50.98,49.0,1.98,395.0,PENDING,,108.72,,NHL
 2026-03-07,STL @ ANA,Anaheim Ducks,61.28,60.0,1.28,579.0,PENDING,,89.61,,NHL
+2026-03-07,HOU @ SAS,San Antonio Spurs,62.01,54.0,8.01,22.0,PENDING,,22.0,,NBA
+2026-03-07,CHA @ PHX,Charlotte Hornets,60.0,54.0,6.0,10.0,PENDING,,10.0,,NBA
+2026-03-07,CHI @ DAL,Chicago Blackhawks,31.28,30.0,1.28,3037.0,PENDING,,51.21,,NHL
