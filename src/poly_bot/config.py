@@ -405,5 +405,7 @@ ABBR_MAP = {
         # NOT FOUND ON POLYMARKET: "Oregon St Beavers"
         # NOT FOUND ON POLYMARKET: "Santa Clara Broncos"
         # NOT FOUND ON POLYMARKET: "Troy Trojans"
+        # NOT FOUND ON POLYMARKET: "Gonzaga Bulldogs"
+        # NOT FOUND ON POLYMARKET: "Saint Mary's Gaels"
     }
 }
