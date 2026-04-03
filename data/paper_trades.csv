@@ -244,3 +244,5 @@ Date,Game,Team_Bet_On,Avg_Norm_SB_Prob,Poly_Buy_Price_Pct,Trading_Edge_Pct,Avail
 2026-04-03,NSH @ SJ,Nashville Predators,51.84,50.0,1.84,1576.0,PENDING,,259.08,,NHL
 2026-04-03,IND @ CHA,Indiana Pacers,10.4,9.0,1.4,5432.0,PENDING,,108.31,,NBA
 2026-04-03,TOR @ MEM,Memphis Grizzlies,13.15,12.0,1.15,4985.0,PENDING,,92.0,,NBA
+2026-04-03,SAS @ DEN,Denver Nuggets,45.05,44.0,1.05,3438.0,PENDING,,132.0,,NBA
+2026-04-03,PHI @ NYI,New York Islanders,43.22,25.0,18.22,24.0,PENDING,,24.0,,NHL
