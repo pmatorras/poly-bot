@@ -341,7 +341,7 @@ Date,Game,Team_Bet_On,Avg_Norm_SB_Prob,Poly_Buy_Price_Pct,Trading_Edge_Pct,Avail
 2026-04-11,MEM @ HOU,Memphis Grizzlies,10.79,8.0,2.79,1057.0,PENDING,,241.35,,NBA
 2026-04-11,NOP @ MIN,New Orleans Pelicans,18.88,16.0,2.88,311.0,PENDING,,272.86,,NBA
 2026-04-11,OTT @ NYI,New York Islanders,3.97,1.9,2.07,5.0,GRADED,LOST,5.0,-5.0,NHL
-2026-04-11,PIT @ WSH,Washington Capitals,55.94,54.0,1.94,81.0,PENDING,,81.0,,NHL
+2026-04-11,PIT @ WSH,Washington Capitals,55.94,54.0,1.94,81.0,GRADED,WON,81.0,69.0,NHL
 2026-04-11,ATL @ MIA,Miami Heat,52.21,51.0,1.21,11633.0,PENDING,,196.03,,NBA
 2026-04-11,CHA @ NYK,New York Knicks,18.32,17.0,1.32,1433.0,PENDING,,126.25,,NBA
 2026-04-11,WAS @ CLE,Washington Wizards,15.31,14.0,1.31,1648.0,PENDING,,120.93,,NBA
@@ -364,3 +364,5 @@ Date,Game,Team_Bet_On,Avg_Norm_SB_Prob,Poly_Buy_Price_Pct,Trading_Edge_Pct,Avail
 2026-04-12,PIT @ WSH,Pittsburgh Penguins,44.16,43.0,1.16,2170.0,PENDING,,161.51,,NHL
 2026-04-12,CAR @ PHI,Philadelphia Flyers,49.07,48.0,1.07,48.0,PENDING,,48.0,,NHL
 2026-04-12,DAL @ TOR,Toronto Maple Leafs,40.48,39.0,1.48,1635.0,PENDING,,192.55,,NHL
+2026-04-12,CHA @ NYK,New York Knicks,8.53,3.7,4.83,15.0,PENDING,,15.0,,NBA
+2026-04-12,MEM @ HOU,Memphis Grizzlies,12.33,11.0,1.33,1334.0,PENDING,,118.86,,NBA
